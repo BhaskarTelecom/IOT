@@ -10,6 +10,7 @@ import math
 TEMP_HUMAN_BODY = 0 #this is not a body temp but rather a location temp where the individual is working
 TEMP_ROOM       = TEMP_HUMAN_BODY+1
 TEMP_SOLDERING  = TEMP_ROOM+1
+HUMIDITY_RH     = TEMP_SOLDERING+1
 
 
 
@@ -23,9 +24,10 @@ RATE_INDEX = VAR_INDEX+1
 #https://www.digikey.com/en/maker/blogs/rohs-vs-non-rohs-soldering
 const__SensorType_Data__ = []
 
-const__SensorType_Data__.append([37.00, 0.4, 0.2]) #36.6 to 37.4 C
-const__SensorType_Data__.append([22.5, 4.5,0.035 ]) # mean 22.5 C, var =4.5 C min 68 F, max 77 F
-const__SensorType_Data__.append([217.0, 2 ,0.09])
+const__SensorType_Data__.append([37.00, 0.4, 0.2]) #36.6 to 37.4 C - Body Temp
+const__SensorType_Data__.append([22.5, 4.5,0.035 ]) #Room Temp: mean 22.5 C, var =4.5 C min 68 F, max 77 F 
+const__SensorType_Data__.append([217.0, 2 ,0.09])   # Soldering Iron temp
+const__SensorType_Data__.append([55.0, 5 , 0.015])   # RH 
 
 
 class TemperatureSensor():
@@ -47,7 +49,7 @@ class TemperatureSensor():
 	def __init__(self, tempSensorType, instanceID):
 		self.tempSensorType = tempSensorType
 		self.instanceID = instanceID
-		
+
 		self.mean = const__SensorType_Data__[tempSensorType][MEAN_INDEX]
 		self.variance = const__SensorType_Data__[tempSensorType][VAR_INDEX]
 		self.rate = const__SensorType_Data__[tempSensorType][RATE_INDEX]
@@ -56,6 +58,7 @@ class TemperatureSensor():
 		self.minVal = self.mean - self.variance
 
 		self.value = self.mean + self.variance*self.rate 
+		self.value +=  self.rate*math.sin(np.random.normal(self.mean, self.variance))	
 
 		
 	def sense(self):
@@ -80,13 +83,48 @@ class TemperatureSensor():
 		return self.instanceID
 
 	
+class HumiditySensor():
+	"""docstring for HumiditySensor"""
+	sensorType = "humidity"
+	unit ="Percentage_RH"
 
-sensor1 = TemperatureSensor(TEMP_HUMAN_BODY, 2)
+	def _pvt_CheckRange(self,value):
+
+		value = min(value, self.maxVal)
+		value = max(value, self.minVal)
+
+		return value
+
+	def __init__(self,instanceID):
+		
+		self.instanceID = instanceID
+
+		self.mean = const__SensorType_Data__[HUMIDITY_RH][MEAN_INDEX]
+		self.variance = const__SensorType_Data__[HUMIDITY_RH][VAR_INDEX]
+		self.rate = const__SensorType_Data__[HUMIDITY_RH][RATE_INDEX]
+
+		self.maxVal = self.mean + self.variance
+		self.minVal = self.mean - self.variance
+
+		self.value = np.random.uniform(self.minVal, self.maxVal)
+
+	def sense(self): 
+		
+		self.value += self.rate*self.variance*math.sin(np.random.uniform(-math.pi/2, math.pi/2))
+		self.value = self._pvt_CheckRange(self.value)
+		return self.value
+
+	#Provide instance ID of the sensor being read.
+	def getInstanceID(self):
+		return self.instanceID
+
+		
+sensor1 = HumiditySensor(5)#TemperatureSensor(TEMP_SOLDERING, 5)
 x = []
-for i in range(0,1000):
+
+for i in range(0,10000):
 	x.append(sensor1.sense())
 
-print(math.sin(np.random.uniform(math.pi/2, -math.pi/2)))
 plt.plot(x)
 plt.axhline(y=sensor1.minVal, color='r', linestyle='-')
 plt.axhline(y=sensor1.maxVal, color='g', linestyle='-')
