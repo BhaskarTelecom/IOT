@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math 
 import enum
+import random
 
 class oscilloscope():
 	"""docstring for oscilloscope"""
@@ -44,7 +45,7 @@ class conveyorBelt():
 		return self.state
 
 
-class testBench(object):
+class testBench:
 	"""docstring for testBench"""
 	VOLT_CURR_MIN = False
 	VOLT_CURR_MAX = True
@@ -74,7 +75,9 @@ class testBench(object):
 		else :
 			mean = self.MIN_MEAN_VOLT
 
-		return mean + np.random.normal(0, self.VOLT_VAR)
+		variance = random.choices( [self.VOLT_VAR-0.03, self.VOLT_VAR-0.01,self.VOLT_VAR],weights=[0.98,0.019,0.001], k=1)
+
+		return   np.random.normal(mean, variance )
 
 	def getCurrent(self, minMax):
 
@@ -83,17 +86,19 @@ class testBench(object):
 		else :
 			mean = self.MIN_MEAN_CURR
 
-		return mean + np.random.normal(0, self.CURR_VAR)
+		variance = random.choices( [self.CURR_VAR-0.03, self.CURR_VAR-0.01, self.CURR_VAR],weights=[0.98,0.019,0.001],k=1)
+		return  np.random.normal(mean , variance)
 
 	def getToBeCalibDate(self):
 		return self.toBeCalibDate
 
 	def doSelfCheck(self):
 
+		error = 0.000000001
 		result = ''
 		#check min range of voltage channel
 		value  = self.getVoltage(self.VOLT_CURR_MIN)
-		if (self.VOLT_VAR - 0.00000001) > abs(value - self.MIN_MEAN_VOLT):
+		if (self.VOLT_VAR - error) > abs(value - self.MIN_MEAN_VOLT):
 			result += 'P'
 		else:
 			result += 'F'
@@ -101,7 +106,7 @@ class testBench(object):
 
 		#check max range of voltage channel
 		value  = self.getVoltage(self.VOLT_CURR_MAX)
-		if (self.VOLT_VAR - 0.00000001) > abs(value - self.MAX_MEAN_VOLT):
+		if (self.VOLT_VAR - error) > abs(value - self.MAX_MEAN_VOLT):
 			result += 'P'
 		else:
 			result += 'F'
@@ -109,14 +114,14 @@ class testBench(object):
 
 		#check min value of current channel
 		value  = self.getCurrent(self.VOLT_CURR_MIN)
-		if (self.CURR_VAR - 0.00000001) > abs(value - self.MIN_MEAN_CURR):
+		if (self.CURR_VAR - error) > abs(value - self.MIN_MEAN_CURR):
 			result += 'P'
 		else:
 			result += 'F'
 
 		#check max value of current channel
 		value  = self.getCurrent(self.VOLT_CURR_MAX)
-		if (self.CURR_VAR - 0.00000001) > abs(value - self.MAX_MEAN_CURR):
+		if (self.CURR_VAR -error) > abs(value - self.MAX_MEAN_CURR):
 			result += 'P'
 		else:
 			result += 'F'
@@ -132,7 +137,7 @@ class testBench(object):
 # print(conv1.setState(conv1.RUN))
 # print(conv1.getState())
 
-tb1 = testBench(3)
+# tb1 = testBench(3)
 # print(tb1.getToBeCalibDate())
 #print(tb1.doSelfCheck())
 # print(tb1.getVoltage(tb1.VOLT_CURR_MAX))
@@ -140,22 +145,3 @@ tb1 = testBench(3)
 
 # print(tb1.getCurrent(tb1.VOLT_CURR_MAX))
 # print(tb1.getCurrent(tb1.VOLT_CURR_MIN))
-count =0
-# for i in range(0,10000):
-# 	if(tb1.doSelfCheck() == 'PPPP'):
-# 		count+=1
-
-# print(count/10000)
-
-# x1 = []
-# x2 = []
-
-# for i in range(0,10000):
-# 	x1.append(tb1.getVoltage(tb1.VOLT_CURR_MAX))
-# 	x2.append(tb1.getVoltage(tb1.VOLT_CURR_MIN))
-
-# plt.plot(x)
-# plt.axhline(y=tb1.VOLT_CURR_MIN, color='r', linestyle='-')
-# plt.axhline(y=sensor1.maxVal, color='g', linestyle='-')
-# plt.title('My graph')
-# plt.show()
