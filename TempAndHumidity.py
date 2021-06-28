@@ -35,6 +35,10 @@ class TemperatureSensor():
 	sensorType = "temperature"
 	unit = "celsius"
 
+	TEMP_HUMAN_BODY = 0 #this is not a body temp but rather a location temp where the individual is working
+	TEMP_ROOM       = TEMP_HUMAN_BODY+1
+	TEMP_SOLDERING  = TEMP_ROOM+1
+
 	def _pvt_CheckRange(self,value):
 
 		value = min(value, self.maxVal)
@@ -49,6 +53,7 @@ class TemperatureSensor():
 	def __init__(self, tempSensorType, instanceID):
 		self.tempSensorType = tempSensorType
 		self.instanceID = instanceID
+		self.correction = 0
 
 		self.mean = const__SensorType_Data__[tempSensorType][MEAN_INDEX]
 		self.variance = const__SensorType_Data__[tempSensorType][VAR_INDEX]
@@ -73,7 +78,7 @@ class TemperatureSensor():
 			self.value = np.random.normal(self.mean , self.variance)
 
 		#check for out of range values of sensor.	
-		self.value = self._pvt_CheckRange(self.value)
+		self.value = self._pvt_CheckRange(self.value - self.correction)
 
 		return self.value
 
@@ -81,6 +86,9 @@ class TemperatureSensor():
 		#Provide instance ID of the sensor being read.
 	def getInstanceID(self):
 		return self.instanceID
+
+	def correction(self, value):
+		self.correction = value
 
 	
 class HumiditySensor():
@@ -119,16 +127,16 @@ class HumiditySensor():
 		return self.instanceID
 
 		
-sensor1 = HumiditySensor(5)#TemperatureSensor(TEMP_SOLDERING, 5)
-x = []
+# sensor1 = HumiditySensor(5)#TemperatureSensor(TEMP_SOLDERING, 5)
+# x = []
 
-for i in range(0,10000):
-	x.append(sensor1.sense())
+# for i in range(0,10000):
+# 	x.append(sensor1.sense())
 
-plt.plot(x)
-plt.axhline(y=sensor1.minVal, color='r', linestyle='-')
-plt.axhline(y=sensor1.maxVal, color='g', linestyle='-')
-plt.title('My graph')
-plt.show()
+# plt.plot(x)
+# plt.axhline(y=sensor1.minVal, color='r', linestyle='-')
+# plt.axhline(y=sensor1.maxVal, color='g', linestyle='-')
+# plt.title('My graph')
+# plt.show()
 
 
