@@ -1,5 +1,13 @@
 from prodLine import * 
 import datetime  
+from client_broker_data import *
+import ssl
+import paho.mqtt.client as mqtt
+import time
+
+
+
+
 
 class simLine():
 	"""docstring for simLine"""
@@ -147,17 +155,29 @@ class simLine():
 			timeDiff  = (currTime - startTime).total_seconds()
 		
 
-
-		print(sec5)
-		print(sec15)
-		print(min5)
-
 	def stopSim(self):
 		self.simTime = 0 
 
 	def pauseSim(self):
 		self.pause = True
 
+
+
+def on_connect(client,userdata, msg,flags,rc):
+    global connflag 
+    connflag = True
+   
+    print("Connection Status: {}".format(rc))
+
+
+def on_message(client, userdata, msg):
+    print(msg.topic+str(msg.payload))
+
+
+simLineClient   = mqtt.Client(clientDict["simLineClient"])
+
+simLineClient.on_connect = on_connect 
+simLineClient.on_message = on_message
 
 
 test = simLine(1)

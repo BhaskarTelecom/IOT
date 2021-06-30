@@ -38,8 +38,9 @@ keyPath = "/home/ashwini/Desktop/IOT/Certificates/private.pem.key"
 connflag = False
 
 def on_connect(client,userdata, msg,flags,rc):
-    global connflag
+    global connflag 
     connflag = True
+   
     print("Connection Status: {}".format(rc))
 
 
@@ -56,7 +57,8 @@ receiver.on_message = on_message
 
 receiver.tls_set(caPath, certfile=certPath, keyfile=keyPath, cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
 receiver.connect(awshost, awsport, keepalive=60)
-time.sleep(0.1)
+
+time.sleep(1)
 
 receiver.loop_start()
 
