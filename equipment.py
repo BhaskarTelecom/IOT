@@ -21,25 +21,27 @@ class oscilloscope():
  
 class conveyorBelt():
 	"""docstring for conveyorBelt"""
-	RUN  = 0
-	HALT = 1
-	STOP = 2
+	RUN  = "RUN"
+	HALT = "HALT"
+	STOP = "STOP"
 
 	def __init__(self, instanceID):
 		self.instanceID = instanceID
-		self.setState(self.STOP)
+		self.setState(self.RUN)
 	
 	def getInstanceID(self):
 		return self.instanceID	
 
 	def setState(self, state):
 
-		if(state <= self.STOP and state >= self.RUN):
+		if state in [self.RUN,self.HALT,self.STOP]:
 			self.state = state
 		else :
 			self.state = self.STOP
 
 	def getState(self):
+
+		[self.state] = random.choices([self.state,self.RUN,self.HALT,self.STOP], weights = [.8,0.1,0.098,0.002], k=1)
 		return self.state
 
 
