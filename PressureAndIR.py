@@ -12,14 +12,33 @@ class PressureSensor:
     sensorType = "pressure"
     unit = "kPa"
 
-    def __init__(self, instanceID , minPressure=1, maxPressure =10):
+    def __init__(self, instanceID ,avgPressure=1, minPressure=0.25, threshPressure = 100):
         self.minPressure = minPressure
-        self.maxPressure = maxPressure
+        self.threshPressure = threshPressure
         self.instanceID = instanceID
+        self.avgPressure = avgPressure
+
+        self.value = np.random.normal(minPressure , 0.03  )
 
     def measure(self):
-        values = np.linspace( self.minPressure,  self.maxPressure,50) # for frequency change number_of_samples (1000 here)
-        return 250+ 250*signal.sawtooth(2 * np.pi * values)
+        
+        self.value += np.random.normal(self.avgPressure, 0.03)
+
+        return self.value
+
+    def clearPressure(self):
+        self.value = 0
+
+
+    def getThreshold(self, check = False):
+        #when check = True, return whether current pressure more than threshold
+        if check :
+            if(self.threshPressure > self.value):
+                return False 
+            else :
+                return True 
+        else :         
+            return self.threshPressure
 
     def getInstanceID(self):
         return self.instanceID
