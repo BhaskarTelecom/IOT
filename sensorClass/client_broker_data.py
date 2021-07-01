@@ -23,6 +23,8 @@ clientDict = {  "simLineClient" : "ProdLine",
 				"simProdServerClient" : "ProductionServer",
 				"simRoomTempClient"  : "RoomTemperatureSensor",
 				"simHumiditySensorClient" : "HumiditySensor",
+				"simEquOscClient" : "OscEquipment",
+				"simEquTbClient" : "tbEquipment",
 				}
 
 topicDict ={    "ST" : "room/room1/prodLine1/sensor/solderingStation/",
@@ -35,7 +37,9 @@ topicDict ={    "ST" : "room/room1/prodLine1/sensor/solderingStation/",
  				"HA" : "room/room1/actuator/humidityActuator/",
  				"IR" : "room/room1/prodLine1/sensor/irSensor/",
  				"ES" : "room/room1/prodLine1/sensor/ESD/",
- 				"PS" : "room/room1/prodLine1/sensor/pressure/"}
+ 				"PS" : "room/room1/prodLine1/sensor/pressure/",
+ 				"PEO": "server/equipment/osc/",
+ 				"PET": "server/equipment/tb/"}
 
 ##########################
 # Instance ID format -of len 7

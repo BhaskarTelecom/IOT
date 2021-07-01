@@ -1,5 +1,5 @@
 from sensorClass.client_broker_data import *
-from sensorClass.act_TempAndHumidity import *
+from sensorClass.equipment import *
 
 
 # Function to call publisher to send data
@@ -11,8 +11,10 @@ def publisher_data(input_topic_name,payload_data, myclient):
 
 def on_connect(client, userdata, flags, rc):
   print("Connected with result code "+str(rc))
-  client.subscribe("room/+/sensor/roomTemp/#",qos=QOS)
-  time.sleep(0.2)
+
+  id = userdata.osc.getInstanceID()
+  client.subscribe(topicDict["PEO"]+id+"/#", QOS )
+  time.sleep(0.1)
   
 
 def on_message(client, userdata, msg):
@@ -20,30 +22,43 @@ def on_message(client, userdata, msg):
     m_decode=str(msg.payload.decode("utf-8","ignore"))
     dataReceived=json.loads(m_decode) #decode json data
 
-    userdata.roomTempAct.updateValue(dataReceived)
+    
+    if dataReceived == userdata.topicListSend[0]:
+        newTopic = topicDict["OS"]+userdata.osc.getInstanceID()+"/"+dataReceived
+        data = userdata.osc.getToBeCalibDate()
+        publisher_data(newTopic, data, client)
 
-    publisher_data(topicDict["RA"]+"State", userdata.roomTempAct.getState(), client)
+    elif  dataReceived == userdata.topicListSend[1] :
+        newTopic = topicDict["OS"]+userdata.osc.getInstanceID()+"/"+dataReceived
+        data = userdata.osc.doSelfCheck()
+        publisher_data(newTopic, data, client)
+
+    
 
 
 
-class simTempAct():
-    """docstring for simTempAct"""
+
+
+class simEquOsc():
+    """docstring for simEquOsc"""
 
     #LineNum in int
     #passed as simTime in unit minutes, stored as seconds
 
 
     def __init__(self, lineNum, simTime = 5):
-        super(simTempAct, self).__init__()
+        super(simEquOsc, self).__init__()
         self.lineNum = lineNum
         self.simTime = simTime*60 + 5 
         self.pause = False
 
+        self.topicListSend =["getCalibDate","doCheck" ]
+
 
         #create instances of room temperature actuator
 
-        id = createInstanceID(self.lineNum, 'A', ABV_DICT["roomtempActuator"], 0)
-        self.roomTempAct = tempAction(instanceID = id)
+        id = createInstanceID(self.lineNum, 'E', ABV_DICT["oscilloscope"], 0)
+        self.osc = oscilloscope(instanceID = id)
         print(id)
 
 
@@ -76,25 +91,25 @@ class simTempAct():
 
 
 def main() :
-    simTempActClient   = mqtt.Client(clientDict["simTempActClient"], clean_session =False)
+    simEquOscClient   = mqtt.Client(clientDict["simEquOscClient"], clean_session =False)
 
-    simTempActClient.on_connect = on_connect 
-    simTempActClient.on_message = on_message
+    simEquOscClient.on_connect = on_connect 
+    simEquOscClient.on_message = on_message
 
-    simTempActClient.connect(brokerHost, brokerPort,brokerKeepAlive)
+    simEquOscClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simTempAct(1)
+    test = simEquOsc(1)
 
     userdata = test
 
-    simTempActClient.user_data_set(userdata)
+    simEquOscClient.user_data_set(userdata)
 
-    simTempActClient.loop_start()
-    test.startSim(simTempActClient)
-    simTempActClient.loop_stop()
+    simEquOscClient.loop_start()
+    test.startSim(simEquOscClient)
+    simEquOscClient.loop_stop()
 
-    simTempActClient.disconnect()
+    simEquOscClient.disconnect()
 
 if __name__ == "__main__":
     main()

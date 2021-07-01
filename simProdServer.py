@@ -20,10 +20,6 @@ def on_message(client, userdata, msg):
     m_decode=str(msg.payload.decode("utf-8","ignore"))
     dataReceived=json.loads(m_decode) #decode json data
 
-    userdata.roomTempAct.updateValue(dataReceived)
-
-    publisher_data(topicDict["RA"]+"State", userdata.roomTempAct.getState(), client)
-
 
 
 class simProdServer():

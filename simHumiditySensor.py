@@ -93,7 +93,7 @@ class simHumiditySensor():
 
 
 def main() :
-	simHumiditySensorClient   = mqtt.Client(clientDict["simHumiditySensorClient"])
+	simHumiditySensorClient   = mqtt.Client(clientDict["simHumiditySensorClient"], clean_session =False)
 
 	simHumiditySensorClient.on_connect = on_connect 
 	simHumiditySensorClient.on_message = on_message

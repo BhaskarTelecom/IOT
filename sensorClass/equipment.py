@@ -4,11 +4,12 @@ import random
 
 class oscilloscope():
 	"""docstring for oscilloscope"""
-	toBeCalibDate = "12102021" #in DD-MM-YYYY format
+	
 
 
 	def __init__(self, instanceID):
 		self.instanceID = instanceID
+		self.toBeCalibDate = "12102021" #in DD-MM-YYYY format
 
 	def getInstanceID(self):
 		return self.instanceID
@@ -59,11 +60,12 @@ class testBench:
 	MAX_MEAN_CURR = 20 #20mA
 	MIN_MEAN_CURR = 4  #4mA
 
-	toBeCalibDate = "12092021" #in DD-MM-YYYY format
+	
 
 
 	def __init__(self, instanceID):
 		self.instanceID = instanceID
+		self.toBeCalibDate = "12092021" #in DD-MM-YYYY format
 		
 	def getInstanceID(self):
 		return self.instanceID
@@ -77,7 +79,7 @@ class testBench:
 
 		variance = random.choices( [self.VOLT_VAR-0.03, self.VOLT_VAR-0.01,self.VOLT_VAR],weights=[0.98,0.019,0.001], k=1)
 
-		return   np.random.normal(mean, variance )
+		return   (np.random.normal(mean, variance )).item()
 
 	def getCurrent(self, minMax):
 
@@ -87,7 +89,7 @@ class testBench:
 			mean = self.MIN_MEAN_CURR
 
 		variance = random.choices( [self.CURR_VAR-0.03, self.CURR_VAR-0.01, self.CURR_VAR],weights=[0.98,0.019,0.001],k=1)
-		return  np.random.normal(mean , variance)
+		return  (np.random.normal(mean , variance)).item()
 
 	def getToBeCalibDate(self):
 		return self.toBeCalibDate
