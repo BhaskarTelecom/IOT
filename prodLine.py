@@ -1,57 +1,7 @@
 from TempAndHumidity import *
 from equipment import *
-from act_TempAndHumidity import *
 from PressureAndIR import *
-
-##########################
-# Instance ID format -of len 7
-#  instance ID =  S/A/E | Abbrevation |Line Number | instance number
-#   S/A -> 'S' (sensor) or 'A' (actuator ) or 'E' (equipment)  - 1 char
-#   Line number  -> 01 - 99 -> 2char
-#   instance number -> 00 - 99 -> 2 char
-#    Abbrevation -> 2char
-#        list of abbrevation
-#                HS : HUMIDITY SENSOR
-#                RT : ROOM TEMPERATUR SENSOR
-#                ST : SOLDERING STATION SENSOR
-#                OS : OSCILLOSCOPE 
-#                TB : TESTBENTCH
-#                CB : CONVYOR BELT
-#				 RA : ROOM ACTUATOR
-#				 HA : HUMIDITY ACTUATOR
-# 				 IR : IR SENSOR
-#########################
-
-ABV_DICT  = { "humidity":		    'HS',
-			   "roomTemp":			'RT', 
-			   "solderingStation":  'ST', 
-			   "oscilloscope" :     'OS',
-			   "testBentch":        'TB',
-			   "convyor" :          'CB',
-			   "roomtempActuator":  'RA' ,
-			   "humidityActuator":  'HA',
-			   "irSensor" :         "IR",
-			   "ESD" :              "ES",
-			   "pressure" :         "PS"}
-
-
-def createInstanceID(lineNum, s_a, abv, instanceNumber):
-	createdID = s_a
-	createdID = createdID + abv
-
-	if lineNum < 10 :
-		createdID += '0'
-
-	createdID += str(lineNum)
-
-	if instanceNumber < 10 :
-		createdID += '0'
-
-	createdID += str(instanceNumber)
-
-	return createdID
-
-
+from client_broker_data import *
 
 
 class prodLine:
@@ -79,19 +29,6 @@ class prodLine:
 		self.pCount 	= pCount
 
 		
-		#create instances of humidity sensor
-		self.humiditySensList = [ ]
-		for i in range (0,self.hCount):
-			id = createInstanceID(self.lineNumber, 'S', ABV_DICT["humidity"], i)
-			self.humiditySensList.append(HumiditySensor(id))
-			print(id)
-
-		#create instances of room temperature sensor
-		self.roomTempSensList =[]
-		for i in range (0,self.rTcount):
-			id = createInstanceID(self.lineNumber, 'S', ABV_DICT["roomTemp"], i)
-			self.roomTempSensList.append(TemperatureSensor(instanceID = id,  tempSensorType = TEMP_ROOM))
-			print(id)
 
 		#create instances of soldering temperature sensor
 		self.solderSensList =[]
