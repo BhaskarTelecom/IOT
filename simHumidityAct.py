@@ -1,18 +1,17 @@
-from act_TempAndHumidity import *
-from client_broker_data import *
+from sensorClass.client_broker_data import *
 
 
 
 # Function to call publisher to send data
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
-    myclient.publish(input_topic_name,publish_data,0)
+    myclient.publish(input_topic_name,publish_data,QOS)
     print(publish_data)
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
   print("Connected with result code "+str(rc))
-  client.subscribe(topicDict["HS"],qos=1)
+  client.subscribe(topicDict["HS"],qos=QOS)
   time.sleep(0.2)
   
 

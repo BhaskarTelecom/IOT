@@ -1,16 +1,11 @@
-from prodLine import * 
-from client_broker_data import *
-import paho.mqtt.client as mqtt
-import time
-import json 
-import datetime  
-
+from sensorClass.client_broker_data import * 
+from sensorClass.prodLine import *
 
 # Function to call publisher to send data
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
-    myclient.publish(input_topic_name,publish_data,0)
-    #print(publish_data)
+    myclient.publish(input_topic_name,publish_data,qos = 0)
+    print(publish_data)
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
@@ -75,7 +70,7 @@ class simLine():
 					key = self.prodline.esdSensorList[x].getInstanceID()
 					self.esdSensor[key]  = self.prodline.esdSensorList[x].getStatus()
 
-				#publisher_data(topicDict["ES"] ,self.esdSensor,clientName)	
+				publisher_data(topicDict["ES"] ,self.esdSensor,clientName)	
 				#print(self.esdSensor)
 
 				#sense convyor belt status
@@ -111,9 +106,6 @@ class simLine():
 				#sense IR sensor counts
 				for x in range(self.prodline.iCount):
 					 self.prodline.irSensorList[x].objectDetected()
-
-
-				sec5+= 1 
 				print("5 sec over")
 
 

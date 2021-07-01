@@ -1,12 +1,11 @@
-from TempAndHumidity import *
-from client_broker_data import *
-
+from sensorClass.client_broker_data import *
+from sensorClass.TempAndHumidity import *
 
 
 # Function to call publisher to send data
 def publisher_data(input_topic_name,payload_data, myclient):
 	publish_data = json.dumps(payload_data,indent=4)
-	myclient.publish(input_topic_name,publish_data,0)
+	myclient.publish(input_topic_name,publish_data,QOS)
 	print(publish_data)
 	#print(input_topic_name)
 	time.sleep(0.1)

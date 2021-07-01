@@ -1,7 +1,7 @@
-from TempAndHumidity import *
-from equipment import *
-from PressureAndIR import *
-from client_broker_data import *
+from sensorClass.TempAndHumidity import *
+from sensorClass.equipment import *
+from sensorClass.PressureAndIR import *
+from sensorClass.client_broker_data import *
 
 
 class prodLine:

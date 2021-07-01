@@ -2,6 +2,10 @@ import paho.mqtt.client as mqtt
 import time
 import datetime  
 import json 
+from sensorClass.act_TempAndHumidity import *
+from sensorClass.TempAndHumidity import *
+from sensorClass.prodLine import *
+
 
 # awshost = "a1etmfjjj6j48x-ats.iot.us-west-2.amazonaws.com"  
 # awsport = 8883
