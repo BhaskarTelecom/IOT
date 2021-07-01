@@ -25,17 +25,17 @@ clientDict = {  "simLineClient" : "ProdLine",
 				"simHumiditySensorClient" : "HumiditySensor",
 				}
 
-topicDict ={    "ST" : "prodLine/solderingStation",
- 			    "HS" : "prodLine/humidity" ,
- 				"RT" : "prodLine/roomTemp",
- 				"OS" : "equipment/oscilloscope",
- 				"TB" : "equipment/testBentch",
- 				"CB" : "prodLine/equipment/convyor",
- 				"RA" : "actuator/roomtempActuator",
- 				"HA" : "actuator/humidityActuator",
- 				"IR" : "prodLine/irSensor",
- 				"ES" : "prodLine/ESD",
- 				"PS" : "prodLine/pressure"}
+topicDict ={    "ST" : "room/room1/prodLine1/sensor/solderingStation/",
+ 			    "HS" : "room/room1/sensor/humidity/" ,
+ 				"RT" : "room/room1/sensor/roomTemp/",
+ 				"OS" : "room/room1/equipment/oscilloscope/",
+ 				"TB" : "room/room1/equipment/testBentch/",
+ 				"CB" : "room/room1/prodLine1/equipment/convyor/",
+ 				"RA" : "room/room1/actuator/roomtempActuator/",
+ 				"HA" : "room/room1/actuator/humidityActuator/",
+ 				"IR" : "room/room1/prodLine1/sensor/irSensor/",
+ 				"ES" : "room/room1/prodLine1/sensor/ESD/",
+ 				"PS" : "room/room1/prodLine1/sensor/pressure/"}
 
 ##########################
 # Instance ID format -of len 7

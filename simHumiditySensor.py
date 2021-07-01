@@ -6,7 +6,7 @@ from sensorClass.TempAndHumidity import *
 def publisher_data(input_topic_name,payload_data, myclient):
 	publish_data = json.dumps(payload_data,indent=4)
 	myclient.publish(input_topic_name,publish_data,QOS)
-	print(publish_data)
+	print(input_topic_name)
 	#print(input_topic_name)
 	time.sleep(0.1)
 
@@ -40,6 +40,7 @@ class simHumiditySensor():
 		self.pause = False
 
 		self.humidity = { }
+		self.topicFinal=""
 
 		#create instances of humidity sensor
 		self.humiditySensList= []
@@ -54,6 +55,7 @@ class simHumiditySensor():
 	    startTime = datetime.datetime.now()
 	    timeDiff = 0
 	    sec15Count = 15
+	    keySet= True
 
 
 	    while self.simTime > 0 and not(self.pause) :
@@ -71,9 +73,12 @@ class simHumiditySensor():
 	        	for x in range(self.hCount):
 	        		key = self.humiditySensList[x].getInstanceID()
 	        		self.humidity[key] =  self.humiditySensList[x].sense()
+	        		if(keySet):
+	        			self.topicFinal += "_"+key
+	        			
+	        	keySet = False
 
-	        	publisher_data(topicDict["HS"] ,self.humidity,clientName)
-
+	        	publisher_data(topicDict["HS"]+self.topicFinal ,self.humidity,clientName)
 	        	print("15 sec over")
 
 	        currTime = datetime.datetime.now()

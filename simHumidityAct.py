@@ -1,22 +1,27 @@
 from sensorClass.client_broker_data import *
-
+from sensorClass.act_TempAndHumidity import *
 
 
 # Function to call publisher to send data
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,QOS)
-    print(publish_data)
+    #print(publish_data)
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
   print("Connected with result code "+str(rc))
-  client.subscribe(topicDict["HS"],qos=QOS)
+  client.subscribe(topicDict["HS"]+"#",qos=QOS)
   time.sleep(0.2)
   
 
 def on_message(client, userdata, msg):
-    print(msg.payload.decode())
+    m_decode=str(msg.payload.decode("utf-8","ignore"))
+    dataReceived=json.loads(m_decode) #decode json data
+
+    userdata.humidityAct.updateValue(dataReceived)
+
+    publisher_data(topicDict["HA"]+"State", userdata.humidityAct.getState(), client)
 
 
 class simHumidityAct():
@@ -76,6 +81,10 @@ def main() :
     time.sleep(0.1)
 
     test = simHumidityAct(1)
+
+    userdata = test
+
+    simHumidityActClient.user_data_set(userdata)
 
     simHumidityActClient.loop_start()
     test.startSim(simHumidityActClient)

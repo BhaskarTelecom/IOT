@@ -5,16 +5,18 @@ from sensorClass.TempAndHumidity import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,qos=QOS)
-    print(publish_data)
+    print(input_topic_name)
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
   print("Connected with result code "+str(rc))
-  #client.subscribe("topic/test")
 
 
 def on_message(client, userdata, msg):
     print(msg.topic+str(msg.payload))
+
+
+
 
 
 class simRoomTemp():
@@ -47,12 +49,14 @@ class simRoomTemp():
             self.roomTempSensList.append(TemperatureSensor(instanceID = id,  tempSensorType = TEMP_ROOM))
             print(id)
 
+        self.topicFinal = ""
+
     def startSim(self, clientName):
 
         startTime = datetime.datetime.now()
         timeDiff = 0
         sec15Count = 15
-
+        keySet= True
 
         while self.simTime > 0 and not(self.pause) :
 
@@ -71,9 +75,15 @@ class simRoomTemp():
                     key = self.roomTempSensList[x].getInstanceID()
                     self.roomTemp[key] =  self.roomTempSensList[x].sense()
 
-                publisher_data(topicDict["RT"] ,self.roomTemp,clientName)
+                    if(keySet):
+                        self.topicFinal += "_"+key
+                        
+                keySet = False
+
+                publisher_data(topicDict["RT"] +self.topicFinal ,self.roomTemp,clientName)
 
                 print("15 sec over")
+
 
             currTime = datetime.datetime.now()
             timeDiff  = (currTime - startTime).total_seconds()
@@ -87,7 +97,7 @@ class simRoomTemp():
 
 
 def main() :
-    simRoomTempClient   = mqtt.Client(clientDict["simRoomTempClient"])
+    simRoomTempClient   = mqtt.Client(clientDict["simRoomTempClient"], clean_session =False)
 
     simRoomTempClient.on_connect = on_connect 
     simRoomTempClient.on_message = on_message

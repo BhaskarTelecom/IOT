@@ -4,8 +4,8 @@ from sensorClass.prodLine import *
 # Function to call publisher to send data
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
-    myclient.publish(input_topic_name,publish_data,qos = 0)
-    print(publish_data)
+    myclient.publish(input_topic_name,publish_data,qos = QOS)
+    print(input_topic_name)
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
@@ -47,6 +47,8 @@ class simLine():
 		self.esdSensor ={}
 		self.pressure = {}
 
+		self.topicFinal = ""
+
 	def startSim(self, clientName):
 
 		startTime = datetime.datetime.now()
@@ -69,17 +71,20 @@ class simLine():
 				for x in range(self.prodline.ESDcount):
 					key = self.prodline.esdSensorList[x].getInstanceID()
 					self.esdSensor[key]  = self.prodline.esdSensorList[x].getStatus()
+					self.topicFinal += "_"+key
 
-				publisher_data(topicDict["ES"] ,self.esdSensor,clientName)	
+				publisher_data(topicDict["ES"] +self.topicFinal ,self.esdSensor,clientName)
+				self.topicFinal=""	
 				#print(self.esdSensor)
 
 				#sense convyor belt status
 				for x in range(self.prodline.cBcount):
 					key = self.prodline.convBeltList[x].getInstanceID()
 					self.convBelt[key]  = self.prodline.convBeltList[x].getState()
+					self.topicFinal += "_"+key
 
-				publisher_data(topicDict["CB"] ,self.convBelt,clientName)
-
+				publisher_data(topicDict["CB"] +self.topicFinal,self.convBelt,clientName)
+				self.topicFinal=""
 				#print(self.convBelt)
 
 
@@ -91,16 +96,20 @@ class simLine():
 				for x in range(self.prodline.sCount):
 					key = self.prodline.solderSensList[x].getInstanceID()
 					self.solderIron[key] =  self.prodline.solderSensList[x].sense()
+					self.topicFinal += "_"+key
 
-				publisher_data(topicDict["ST"] ,self.solderIron,clientName)
+				publisher_data(topicDict["ST"] +self.topicFinal,self.solderIron,clientName)
+				self.topicFinal=""
 				#print(self.solderIron)
 
 				#sense pressure/weight values
 				for x in range(self.prodline.pCount):
 					key = self.prodline.pressureSensorList[x].getInstanceID()
 					self.pressure[key] =  self.prodline.pressureSensorList[x].measure()
+					self.topicFinal += "_"+key
 
-				publisher_data(topicDict["PS"] ,self.pressure,clientName)
+				publisher_data(topicDict["PS"]+self.topicFinal ,self.pressure,clientName)
+				self.topicFinal=""
 				#print(self.pressure)
 
 				#sense IR sensor counts
@@ -119,8 +128,10 @@ class simLine():
 					key =  self.prodline.irSensorList[x].getInstanceID()
 					self.irSensor[key] =  self.prodline.irSensorList[x].getCount()
 					self.prodline.irSensorList[x].clearCount()
+					self.topicFinal += "_"+key
 
-				publisher_data(topicDict["IR"] ,self.irSensor,clientName)
+				publisher_data(topicDict["IR"]+self.topicFinal ,self.irSensor,clientName)
+				self.topicFinal=""
 				#print(self.irSensor)
 
 				print("5 min over")
@@ -140,7 +151,7 @@ class simLine():
 		self.pause = True
 
 def main() :
-	simLineClient   = mqtt.Client(clientDict["simLineClient"])
+	simLineClient   = mqtt.Client(clientDict["simLineClient"], clean_session =False)
 
 	simLineClient.on_connect = on_connect 
 	simLineClient.on_message = on_message

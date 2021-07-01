@@ -6,12 +6,12 @@ from sensorClass.act_TempAndHumidity import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,QOS)
-    print(publish_data)
+    #print(publish_data)
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
   print("Connected with result code "+str(rc))
-  client.subscribe("room/+/sensor/roomTemp/#",qos=QOS)
+  client.subscribe("room/#",qos=QOS)
   time.sleep(0.2)
   
 
@@ -26,25 +26,21 @@ def on_message(client, userdata, msg):
 
 
 
-class simTempAct():
-    """docstring for simTempAct"""
+class simProdServer():
+    """docstring for simProdServer"""
 
     #LineNum in int
     #passed as simTime in unit minutes, stored as seconds
 
 
-    def __init__(self, lineNum, simTime = 5):
-        super(simTempAct, self).__init__()
-        self.lineNum = lineNum
+    def __init__(self, simTime = 5):
+        super(simProdServer, self).__init__()
+
         self.simTime = simTime*60 + 5 
         self.pause = False
 
 
-        #create instances of room temperature actuator
-
-        id = createInstanceID(self.lineNum, 'A', ABV_DICT["roomtempActuator"], 0)
-        self.roomTempAct = tempAction(instanceID = id)
-        print(id)
+        
 
 
     def startSim(self, clientName):
@@ -76,25 +72,25 @@ class simTempAct():
 
 
 def main() :
-    simTempActClient   = mqtt.Client(clientDict["simTempActClient"], clean_session =False)
+    simProdServerClient   = mqtt.Client(clientDict["simProdServerClient"], clean_session =False)
 
-    simTempActClient.on_connect = on_connect 
-    simTempActClient.on_message = on_message
+    simProdServerClient.on_connect = on_connect 
+    simProdServerClient.on_message = on_message
 
-    simTempActClient.connect(brokerHost, brokerPort,brokerKeepAlive)
+    simProdServerClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simTempAct(1)
+    test = simProdServer( )
 
     userdata = test
 
-    simTempActClient.user_data_set(userdata)
+    simProdServerClient.user_data_set(userdata)
 
-    simTempActClient.loop_start()
-    test.startSim(simTempActClient)
-    simTempActClient.loop_stop()
+    simProdServerClient.loop_start()
+    test.startSim(simProdServerClient)
+    simProdServerClient.loop_stop()
 
-    simTempActClient.disconnect()
+    simProdServerClient.disconnect()
 
 if __name__ == "__main__":
     main()

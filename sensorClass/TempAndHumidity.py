@@ -25,7 +25,7 @@ RATE_INDEX = VAR_INDEX+1
 const__SensorType_Data__ = []
 
 const__SensorType_Data__.append([37.00, 0.4, 0.2]) #36.6 to 37.4 C - Body Temp
-const__SensorType_Data__.append([22.5, 4.5,0.035 ]) #Room Temp: mean 22.5 C, var =4.5 C min 68 F, max 77 F 
+const__SensorType_Data__.append([22.5, 4.5,0.2 ]) #Room Temp: mean 22.5 C, var =4.5 C min 68 F, max 77 F 
 const__SensorType_Data__.append([217.0, 2 ,0.09])   # Soldering Iron temp
 const__SensorType_Data__.append([55.0, 5 , 0.015])   # RH 
 
