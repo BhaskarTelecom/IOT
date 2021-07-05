@@ -5,12 +5,13 @@ from sensorClass.prodLine import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,qos = QOS)
-    print(input_topic_name)
+    #print(input_topic_name)
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  print("Connected with result code "+str(rc))
+  #print("Connected with result code "+str(rc))
   #client.subscribe("topic/test")
+  pass
 
 
 def on_message(client, userdata, msg):

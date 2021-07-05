@@ -10,7 +10,7 @@ def publisher_data(input_topic_name,payload_data, myclient):
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  print("Connected with result code "+str(rc))
+  #print("Connected with result code "+str(rc))
 
   id = userdata.osc.getInstanceID()
   client.subscribe(topicDict["PEO"]+id+"/#", QOS )
@@ -25,17 +25,13 @@ def on_message(client, userdata, msg):
     
     if dataReceived == userdata.topicListSend[0]:
         newTopic = topicDict["OS"]+userdata.osc.getInstanceID()+"/"+dataReceived
-        data = userdata.osc.getToBeCalibDate()
+        data = {userdata.osc.getInstanceID(): userdata.osc.getToBeCalibDate()}
         publisher_data(newTopic, data, client)
 
     elif  dataReceived == userdata.topicListSend[1] :
         newTopic = topicDict["OS"]+userdata.osc.getInstanceID()+"/"+dataReceived
-        data = userdata.osc.doSelfCheck()
+        data = {userdata.osc.getInstanceID(): userdata.osc.doSelfCheck()}
         publisher_data(newTopic, data, client)
-
-    
-
-
 
 
 

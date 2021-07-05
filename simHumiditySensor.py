@@ -6,7 +6,7 @@ from sensorClass.TempAndHumidity import *
 def publisher_data(input_topic_name,payload_data, myclient):
 	publish_data = json.dumps(payload_data,indent=4)
 	myclient.publish(input_topic_name,publish_data,QOS)
-	print(input_topic_name)
+	#print(input_topic_name)
 	#print(input_topic_name)
 	time.sleep(0.1)
 
@@ -33,7 +33,7 @@ class simHumiditySensor():
 	# IR sensor - every 5 min - but will sense every 5 sec, will send "false" and "true" count only in the interval of 5 min
 	# esd sensor  will check every 1 sec
 	# pressure sensor - every 5 sec 
-	def __init__(self, lineNum, simTime = 5, hCount = 3):
+	def __init__(self, lineNum, simTime = 5, hCount = 1):
 		self.lineNum = lineNum
 		self.simTime = simTime*60 + 5 
 		self.hCount = hCount

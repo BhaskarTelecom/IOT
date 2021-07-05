@@ -22,7 +22,9 @@ def on_message(client, userdata, msg):
 
     userdata.roomTempAct.updateValue(dataReceived)
 
-    publisher_data(topicDict["RA"]+"State", userdata.roomTempAct.getState(), client)
+    dataSend = {userdata.roomTempAct.getInstanceID() : userdata.roomTempAct.getState()}
+
+    publisher_data(topicDict["RA"]+"State", dataSend, client)
 
 
 

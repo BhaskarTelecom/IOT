@@ -10,7 +10,7 @@ def publisher_data(input_topic_name,payload_data, myclient):
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  print("Connected with result code "+str(rc))
+  #print("Connected with result code "+str(rc))
   client.subscribe(topicDict["HS"]+"#",qos=QOS)
   time.sleep(0.2)
   
@@ -20,8 +20,8 @@ def on_message(client, userdata, msg):
     dataReceived=json.loads(m_decode) #decode json data
 
     userdata.humidityAct.updateValue(dataReceived)
-
-    publisher_data(topicDict["HA"]+"State", userdata.humidityAct.getState(), client)
+    dataSend  = {userdata.humidityAct.getInstanceID() : userdata.humidityAct.getState()}
+    publisher_data(topicDict["HA"]+"State",dataSend, client)
 
 
 class simHumidityAct():

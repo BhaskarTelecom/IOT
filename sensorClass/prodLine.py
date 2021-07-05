@@ -16,12 +16,10 @@ class prodLine:
 	# pCount  : Pressure sensor
 		
 
-	def __init__(self, lineNumber, hCount = 3, rTcount = 4, sCount = 3, cBcount=2, iCount = 1, pCount=2):
+	def __init__(self, lineNumber, sCount = 1, cBcount=1, iCount = 1, pCount=1):
 
 		super(prodLine, self).__init__()
 		self.lineNumber = lineNumber
-		self.hCount     = hCount
-		self.rTcount    = rTcount
 		self.sCount     = sCount
 		self.cBcount	= cBcount
 		self.iCount     = iCount

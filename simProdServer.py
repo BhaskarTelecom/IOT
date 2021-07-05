@@ -1,5 +1,6 @@
 from sensorClass.client_broker_data import *
 from sensorClass.act_TempAndHumidity import *
+from dataBase.dbHandler import *
 
 
 # Function to call publisher to send data
@@ -10,7 +11,7 @@ def publisher_data(input_topic_name,payload_data, myclient):
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  print("Connected with result code "+str(rc))
+  #print("Connected with result code "+str(rc))
   client.subscribe("room/#",qos=QOS)
   time.sleep(0.2)
   
@@ -19,7 +20,8 @@ def on_message(client, userdata, msg):
 
     m_decode=str(msg.payload.decode("utf-8","ignore"))
     dataReceived=json.loads(m_decode) #decode json data
-
+    #print("here")
+    handleData(dataReceived)
 
 
 class simProdServer():
@@ -71,13 +73,12 @@ def main() :
     simProdServerClient   = mqtt.Client(clientDict["simProdServerClient"], clean_session =False)
 
     simProdServerClient.on_connect = on_connect 
-    simProdServerClient.on_message = on_message
+    simProdServerClient.on_message = on_message 
 
     simProdServerClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
     test = simProdServer( )
-
     userdata = test
 
     simProdServerClient.user_data_set(userdata)

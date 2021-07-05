@@ -10,7 +10,7 @@ def publisher_data(input_topic_name,payload_data, myclient):
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  print("Connected with result code "+str(rc))
+  #print("Connected with result code "+str(rc))
 
   id = userdata.tb.getInstanceID()
   client.subscribe(topicDict["PET"]+id+"/#", qos= QOS )
@@ -25,12 +25,12 @@ def on_message(client, userdata, msg):
     
     if dataReceived == userdata.topicListSend[0]:
         newTopic = topicDict["TB"]+userdata.tb.getInstanceID()+"/"+dataReceived
-        data = userdata.tb.getToBeCalibDate()
+        data = {userdata.tb.getInstanceID():userdata.tb.getToBeCalibDate()}
         publisher_data(newTopic, data, client)
 
     elif  dataReceived == userdata.topicListSend[1] :
         newTopic = topicDict["TB"]+userdata.tb.getInstanceID()+"/"+dataReceived
-        data = userdata.tb.doSelfCheck()
+        data = {userdata.tb.getInstanceID():userdata.tb.doSelfCheck()}
         publisher_data(newTopic, data, client)
 
 
@@ -64,7 +64,8 @@ class simEquTb():
         startTime = datetime.datetime.now()
         timeDiff = 0
         sec15Count = 15
-        topic  = topicDict["TB"]+ self.tb.getInstanceID()+"/"+self.topicListSend[2]
+        tempID  = self.tb.getInstanceID()
+        topic  = topicDict["TB"]+ tempID+"/"+self.topicListSend[2]
         result = {}
 
         while self.simTime > 0 and not(self.pause) :
@@ -83,7 +84,7 @@ class simEquTb():
                 result["maxValueCurr"] = self.tb.getCurrent(True)
                 result["minValueCurr"] = self.tb.getCurrent(False)
 
-                publisher_data(topic,result,clientName)
+                publisher_data(topic,{tempID:result},clientName)
 
 
             time.sleep(0.1)
