@@ -20,8 +20,7 @@ def on_message(client, userdata, msg):
     dataReceived=json.loads(m_decode) #decode json data
 
     userdata.humidityAct.updateValue(dataReceived)
-    dataSend  = {userdata.humidityAct.getInstanceID() : userdata.humidityAct.getState()}
-    publisher_data(topicDict["HA"]+"State",dataSend, client)
+   
 
 
 class simHumidityAct():
@@ -58,6 +57,11 @@ class simHumidityAct():
                 self.simTime -= 1
                 sec15Count  -= 1
 
+            if sec15Count == 0:
+                sec15Count = 15
+
+                dataSend  = {self.humidityAct.getInstanceID() : self.humidityAct.getState()}
+                publisher_data(topicDict["HA"]+"State",dataSend, clientName)
 
             time.sleep(0.1)
             currTime = datetime.datetime.now()
@@ -80,7 +84,7 @@ def main() :
     simHumidityActClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simHumidityAct(1)
+    test = simHumidityAct(1,25)
 
     userdata = test
 

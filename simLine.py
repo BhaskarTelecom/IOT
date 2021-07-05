@@ -160,7 +160,7 @@ def main() :
 	simLineClient.connect(brokerHost, brokerPort,brokerKeepAlive)
 	time.sleep(0.2)
 
-	test = simLine(1)
+	test = simLine(1,25)
 
 	simLineClient.loop_start()
 	test.startSim(simLineClient)

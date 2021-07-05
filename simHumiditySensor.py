@@ -101,7 +101,7 @@ def main() :
 	simHumiditySensorClient.connect(brokerHost, brokerPort,brokerKeepAlive)
 	time.sleep(0.2)
 
-	test = simHumiditySensor(1)
+	test = simHumiditySensor(1,simTime = 25)
 
 	simHumiditySensorClient.loop_start()
 	test.startSim(simHumiditySensorClient)

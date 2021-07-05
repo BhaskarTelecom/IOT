@@ -78,7 +78,7 @@ def main() :
     simProdServerClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simProdServer( )
+    test = simProdServer(25 )
     userdata = test
 
     simProdServerClient.user_data_set(userdata)

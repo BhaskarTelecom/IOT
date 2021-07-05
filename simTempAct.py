@@ -22,10 +22,6 @@ def on_message(client, userdata, msg):
 
     userdata.roomTempAct.updateValue(dataReceived)
 
-    dataSend = {userdata.roomTempAct.getInstanceID() : userdata.roomTempAct.getState()}
-
-    publisher_data(topicDict["RA"]+"State", dataSend, client)
-
 
 
 class simTempAct():
@@ -64,6 +60,14 @@ class simTempAct():
                 self.simTime -= 1
                 sec15Count  -= 1
 
+            if sec15Count == 0:
+                sec15Count = 15
+
+                dataSend = {self.roomTempAct.getInstanceID() : self.roomTempAct.getState()}
+                publisher_data(topicDict["RA"]+"State", dataSend, clientName)
+
+
+
 
             time.sleep(0.1)
             currTime = datetime.datetime.now()
@@ -86,7 +90,7 @@ def main() :
     simTempActClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simTempAct(1)
+    test = simTempAct(1,25)
 
     userdata = test
 

@@ -73,6 +73,13 @@ class simEquOsc():
                 self.simTime -= 1
                 sec15Count  -= 1
 
+            if sec15Count == 0:
+                sec15Count = 15
+
+                newTopic = topicDict["OS"]+self.osc.getInstanceID()+"/"+self.topicListSend[1]
+                data = {self.osc.getInstanceID(): self.osc.doSelfCheck()}
+                publisher_data(newTopic, data, clientName)
+
 
             time.sleep(0.1)
             currTime = datetime.datetime.now()
@@ -95,7 +102,7 @@ def main() :
     simEquOscClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simEquOsc(1)
+    test = simEquOsc(1,25)
 
     userdata = test
 

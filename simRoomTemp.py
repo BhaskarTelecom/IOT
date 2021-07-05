@@ -106,7 +106,7 @@ def main() :
     simRoomTempClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.2)
 
-    test = simRoomTemp(1)
+    test = simRoomTemp(1,25)
 
     simRoomTempClient.loop_start()
     test.startSim(simRoomTempClient)

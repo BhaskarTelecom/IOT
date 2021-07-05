@@ -108,7 +108,7 @@ def main() :
     simEquTbClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simEquTb(1)
+    test = simEquTb(1,25)
 
     userdata = test
 
