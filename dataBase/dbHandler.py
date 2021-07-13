@@ -20,7 +20,6 @@ def createDB(fileName):
 
 def handleData(data):
 
-	handlingStatus = False
 	#1.Ensure all data being sent to server is of dict type with instanceID as key
 
 	data.update({"date":datetime.datetime.now().date()})
@@ -67,6 +66,5 @@ def handleData(data):
 	#print("all done")
 	#print(df)
 	df.to_csv(newFileName)
-	return handlingStatus 
 
 createDB(masterFILE)

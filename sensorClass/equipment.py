@@ -9,7 +9,7 @@ class oscilloscope():
 
 	def __init__(self, instanceID):
 		self.instanceID = instanceID
-		self.toBeCalibDate = "12102021" #in DD-MM-YYYY format
+		self.toBeCalibDate = "12/10/2021" #in DD-MM-YYYY format
 
 	def getInstanceID(self):
 		return self.instanceID
@@ -65,7 +65,7 @@ class testBench:
 
 	def __init__(self, instanceID):
 		self.instanceID = instanceID
-		self.toBeCalibDate = "12092021" #in DD-MM-YYYY format
+		self.toBeCalibDate = "12/09/2021" #in DD-MM-YYYY format
 		
 	def getInstanceID(self):
 		return self.instanceID

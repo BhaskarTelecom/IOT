@@ -1,7 +1,9 @@
 from sensorClass.client_broker_data import *
 from sensorClass.act_TempAndHumidity import *
 from dataBase.dbHandler import *
+from plannerAI.plannerAI import *
 
+listOfEquID = []
 
 # Function to call publisher to send data
 def publisher_data(input_topic_name,payload_data, myclient):
@@ -20,8 +22,29 @@ def on_message(client, userdata, msg):
 
     m_decode=str(msg.payload.decode("utf-8","ignore"))
     dataReceived=json.loads(m_decode) #decode json data
-    #print("here")
-    handleData(dataReceived)
+
+
+    aiPlanner(dataReceived, msg.topic)
+
+    if 'equipment' in msg.topic :
+        if 'convyor' not in msg.topic :
+
+            for item in list(dataReceived.keys()):
+                if item not in listOfEquID :
+                    listOfEquID.append(item)
+            #print(listOfEquID)
+
+    if 'getCalibDate' not in msg.topic :
+        handleData(dataReceived)
+
+
+
+    
+
+
+
+    
+    
 
 
 class simProdServer():
@@ -55,6 +78,35 @@ class simProdServer():
                 startTime = currTime
                 self.simTime -= 1
                 sec15Count  -= 1
+
+            #get calibration date of equipments - 15 sec
+                # get list of osc and tb in network - from master db
+
+            if(sec15Count == 0):
+                sec15Count = 15
+
+                if listOfEquID :
+                    print('in server15 sec ') 
+
+                    for item in listOfEquID :
+
+                        if item[1:3] == 'OS' :
+                            #ask for calibration date
+                            topic = topicDict['PEO'] 
+                        else :
+                            topic = topicDict['PET']
+
+                        topic +=  item + "/getCalibDate"
+                        publisher_data(topic, "getCalibDate" , clientName)
+
+                        if item[1:3] == 'TB' :
+                            topic = topicDict['PET']+item + "/doCheck"
+                            publisher_data(topic, "doCheck", clientName)
+
+
+
+
+
 
 
             time.sleep(0.1)
