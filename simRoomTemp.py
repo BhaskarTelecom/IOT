@@ -14,7 +14,8 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    print(msg.topic+str(msg.payload))
+    #print(msg.topic+str(msg.payload))
+    pass
 
 
 
@@ -83,7 +84,7 @@ class simRoomTemp():
 
                 publisher_data(topicDict["RT"] +self.topicFinal ,self.roomTemp ,clientName)
 
-                print("15 sec over")
+                print("---15 sec over Room Temp---")
 
 
             currTime = datetime.datetime.now()

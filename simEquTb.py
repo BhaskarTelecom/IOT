@@ -6,7 +6,7 @@ from sensorClass.equipment import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,QOS)
-    print(publish_data)
+    #print(publish_data)
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):

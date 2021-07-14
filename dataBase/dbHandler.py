@@ -1,6 +1,7 @@
 import csv 
 import pandas as pd
 import datetime
+from plannerAI.plannerAI import *
 
 masterFILE = "masteDB.csv"
 path = "dataBase/"
@@ -35,11 +36,13 @@ def handleData(data):
 
 	if not(roomNumber in df.columns):
 		df[roomNumber] = tempKeyList
+		updateObjects(tempKeyList.copy())
 		
 	# tempKeyList = list(tempKeyList.extend([timeStamp]))
 	for item in tempKeyList:		
 		if not (item in list(df[roomNumber])) :
 			df = df.append({roomNumber:item},ignore_index=True)
+			updateObjects([item])
 
 	#print(df)
 

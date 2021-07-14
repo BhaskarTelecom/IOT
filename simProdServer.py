@@ -25,6 +25,7 @@ def on_message(client, userdata, msg):
 
 
     aiPlanner(dataReceived, msg.topic)
+    defineProblemFile()
 
     if 'equipment' in msg.topic :
         if 'convyor' not in msg.topic :
@@ -35,16 +36,9 @@ def on_message(client, userdata, msg):
             #print(listOfEquID)
 
     if 'getCalibDate' not in msg.topic :
+        
         handleData(dataReceived)
 
-
-
-    
-
-
-
-    
-    
 
 
 class simProdServer():
@@ -86,7 +80,7 @@ class simProdServer():
                 sec15Count = 15
 
                 if listOfEquID :
-                    print('in server15 sec ') 
+                    print('---in server 15 sec ---') 
 
                     for item in listOfEquID :
 

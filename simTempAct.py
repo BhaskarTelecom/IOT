@@ -10,7 +10,7 @@ def publisher_data(input_topic_name,payload_data, myclient):
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  print("Connected with result code "+str(rc))
+  #print("Connected with result code "+str(rc))
   client.subscribe("room/+/sensor/roomTemp/#",qos=QOS)
   time.sleep(0.2)
   

@@ -11,12 +11,14 @@ def publisher_data(input_topic_name,payload_data, myclient):
 	time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-	print("Connected with result code "+str(rc))
+	#print("Connected with result code "+str(rc))
 	#client.subscribe("topic/test")
+	pass
 
 
 def on_message(client, userdata, msg):
-	print(msg.topic+str(msg.payload))
+	#print(msg.topic+str(msg.payload))
+	pass
 
 
 
@@ -79,7 +81,7 @@ class simHumiditySensor():
 	        	keySet = False
 
 	        	publisher_data(topicDict["HS"]+self.topicFinal ,self.humidity,clientName)
-	        	print("15 sec over")
+	        	print("-----------15 sec over HumiditySensor---------")
 
 	        currTime = datetime.datetime.now()
 	        timeDiff  = (currTime - startTime).total_seconds()

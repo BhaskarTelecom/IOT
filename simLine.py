@@ -15,7 +15,8 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    print(msg.topic+str(msg.payload))
+    #print(msg.topic+str(msg.payload))
+    pass
 
 
 class simLine():
@@ -116,7 +117,7 @@ class simLine():
 				#sense IR sensor counts
 				for x in range(self.prodline.iCount):
 					 self.prodline.irSensorList[x].objectDetected()
-				print("5 sec over")
+				print("----5 sec over line---")
 
 
 			#check if 5 min have passed or not
@@ -135,7 +136,7 @@ class simLine():
 				self.topicFinal=""
 				#print(self.irSensor)
 
-				print("5 min over")
+				print("-----5 min over Line----")
 
 
 
