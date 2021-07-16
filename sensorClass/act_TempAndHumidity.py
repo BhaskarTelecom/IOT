@@ -8,7 +8,7 @@ class tempAction:
 	ON =  "ON"
 
 	def __init__(self, instanceID):
-		self.status = self.OFF 
+		self.status = self.ON 
 		self.instanceID = instanceID
 		self.setpoint = 23
 
@@ -22,10 +22,10 @@ class tempAction:
 
 		dataReceived = [*dataReceived.values()]
 		avgValue = sum(dataReceived)/float(len(dataReceived))
-		if avgValue > self.setpoint:
-			self.changeState(self.ON)
-		else :
-			self.changeState(self.OFF)
+		# if avgValue > self.setpoint:
+		# 	self.changeState(self.ON)
+		# else :
+		# 	self.changeState(self.OFF)
 
 	def getInstanceID(self):
 		return self.instanceID
@@ -35,7 +35,7 @@ class humidityAction:
 	ON =  "ON"
 
 	def __init__(self, instanceID):
-		self.status = self.OFF 
+		self.status = self.ON 
 		self.instanceID = instanceID
 		self.setpoint = 56
 
@@ -49,10 +49,10 @@ class humidityAction:
 	def updateValue(self, dataReceived):
 		dataReceived = [*dataReceived.values()]
 		avgValue = sum(dataReceived)/float(len(dataReceived))
-		if avgValue > self.setpoint:
-			self.changeState(self.ON)
-		else :
-			self.changeState(self.OFF)
+		# if avgValue > self.setpoint:
+		# 	self.changeState(self.ON)
+		# else :
+		# 	self.changeState(self.OFF)
 
 	def getInstanceID(self):
 		return self.instanceID

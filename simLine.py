@@ -5,19 +5,29 @@ from sensorClass.prodLine import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,qos = QOS)
-    #print(input_topic_name)
+    print("Publishing to :" + input_topic_name )
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  #print("Connected with result code "+str(rc))
-  #client.subscribe("topic/test")
-  pass
+	print("Connected with result code "+str(rc))
 
 
+	for item in userdata.prodline.pressureSensorList :
+		identity = item.getInstanceID()
+		client.subscribe(topicDict["PRL"]+identity+"/#")
+		print("--Subscribed to :"+topicDict["PRL"]+identity+"/#")
+  
 def on_message(client, userdata, msg):
-    #print(msg.topic+str(msg.payload))
-    pass
+	m_decode=str(msg.payload.decode("utf-8","ignore"))
+	dataReceived=json.loads(m_decode) #decode json data
 
+	print("Server msg received :"+msg.topic)
+
+	if "pressure" in msg.topic and "clear" in msg.topic :
+		for item in userdata.prodline.pressureSensorList:
+			if item.getInstanceID() == dataReceived:
+				item.clearPressure()
+ 
 
 class simLine():
 	"""docstring for simLine"""
@@ -56,7 +66,7 @@ class simLine():
 		startTime = datetime.datetime.now()
 		timeDiff = 0
 		sec5Count = 5
-		min5Count = 5*60 
+		min1Count = 60 
 
 
 
@@ -67,7 +77,16 @@ class simLine():
 				startTime = currTime
 				self.simTime -= 1
 				sec5Count -= 1
-				min5Count  -= 1
+				min1Count  -= 1
+
+				#sense IR sensor counts
+				for x in range(self.prodline.iCount):
+					 self.prodline.irSensorList[x].objectDetected()
+
+
+			# check 5 seconds have passed  or not
+			if(sec5Count == 0) :
+				sec5Count = 5 
 
 				#sense esd sensor status
 				for x in range(self.prodline.ESDcount):
@@ -77,7 +96,6 @@ class simLine():
 
 				publisher_data(topicDict["ES"] +self.topicFinal ,self.esdSensor,clientName)
 				self.topicFinal=""	
-				#print(self.esdSensor)
 
 				#sense convyor belt status
 				for x in range(self.prodline.cBcount):
@@ -87,18 +105,12 @@ class simLine():
 
 				publisher_data(topicDict["CB"] +self.topicFinal,self.convBelt,clientName)
 				self.topicFinal=""
-				#print(self.convBelt)
-
-
-			# check 5 seconds have passed  or not
-			if(sec5Count == 0) :
-				sec5Count = 5 
 
 				#sense soldering station temperature values
 				for x in range(self.prodline.sCount):
 					key = self.prodline.solderSensList[x].getInstanceID()
 					self.solderIron[key] =  self.prodline.solderSensList[x].sense()
-					self.topicFinal += "_"+key
+					self.topicFinal += "_"+ key
 
 				publisher_data(topicDict["ST"] +self.topicFinal,self.solderIron,clientName)
 				self.topicFinal=""
@@ -114,15 +126,12 @@ class simLine():
 				self.topicFinal=""
 				#print(self.pressure)
 
-				#sense IR sensor counts
-				for x in range(self.prodline.iCount):
-					 self.prodline.irSensorList[x].objectDetected()
-				print("----5 sec over line---")
+				
 
 
-			#check if 5 min have passed or not
-			if(min5Count == 0):
-				min5Count = 5*60
+			#check if 1 min have passed or not
+			if(min1Count == 0):
+				min1Count = 60
 
 
 				#send IR sensor counts
@@ -136,7 +145,7 @@ class simLine():
 				self.topicFinal=""
 				#print(self.irSensor)
 
-				print("-----5 min over Line----")
+				print("-----Line : 1 min over----")
 
 
 
@@ -145,9 +154,12 @@ class simLine():
 			currTime = datetime.datetime.now()
 			timeDiff  = (currTime - startTime).total_seconds()
 		
+		self.stopSim()
 
+		
 	def stopSim(self):
 		self.simTime = 0 
+		print("----Simulation endded----")
 
 	def pauseSim(self):
 		self.pause = True
@@ -161,7 +173,10 @@ def main() :
 	simLineClient.connect(brokerHost, brokerPort,brokerKeepAlive)
 	time.sleep(0.2)
 
-	test = simLine(1,25)
+	test = simLine(1,SIMULATION_TIME)
+
+	userdata = test
+	simLineClient.user_data_set(userdata)
 
 	simLineClient.loop_start()
 	test.startSim(simLineClient)

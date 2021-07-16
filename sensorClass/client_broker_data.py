@@ -13,6 +13,8 @@ brokerHost =  "broker.emqx.io" #"localhost"
 brokerPort = 1883
 brokerKeepAlive = 60
 
+SIMULATION_TIME = 5
+
 QOS = 1 #0
 
 
@@ -39,7 +41,10 @@ topicDict ={    "ST" : "room/room1/prodLine1/sensor/solderingStation/",
  				"ES" : "room/room1/prodLine1/sensor/ESD/",
  				"PS" : "room/room1/prodLine1/sensor/pressure/",
  				"PEO": "server/equipment/osc/",
- 				"PET": "server/equipment/tb/"}
+ 				"PET": "server/equipment/tb/",
+ 				"PHA": "server/actuator/humidityActuator/",
+ 				"PRA": "server/actuator/roomtempActuator/",
+ 				"PRL" : "server/room1/prodLine1/sensor/pressure/"}
 
 ##########################
 # Instance ID format -of len 7
@@ -71,6 +76,9 @@ ABV_DICT  = { "humidity":		    'HS',
 			   "irSensor" :         "IR",
 			   "ESD" :              "ES",
 			   "pressure" :         "PS"}
+
+
+listOfEmailID = {'server': 'kittu1796@gmail.com', 'PPMMAINTENANCE1':'kittu1796@gmail.com', 'PPLLOGISTICS1' :'kittu1796@gmail.com' ,'PPQQUALITY1':'kittu1796@gmail.com'}
 
 def createInstanceID(lineNum, s_a, abv, instanceNumber):
 	createdID = s_a

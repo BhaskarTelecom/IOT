@@ -6,14 +6,15 @@ from sensorClass.equipment import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,QOS)
-    #print(publish_data)
+    print("Publishing to :" + input_topic_name )
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  #print("Connected with result code "+str(rc))
+  print("Connected with result code "+str(rc))
 
-  id = userdata.tb.getInstanceID()
-  client.subscribe(topicDict["PET"]+id+"/#", qos= QOS )
+  identity = userdata.tb.getInstanceID()
+  client.subscribe(topicDict["PET"]+identity+"/#", qos= QOS )
+  print("--Subscribed to :"+topicDict["PET"]+identity+"/#" )
   time.sleep(0.1)
   
 
@@ -22,7 +23,7 @@ def on_message(client, userdata, msg):
     m_decode=str(msg.payload.decode("utf-8","ignore"))
     dataReceived=json.loads(m_decode) #decode json data
 
-    print("date received in TB")
+    print("Server msg received :"+msg.topic)
 
     newTopic = topicDict["TB"]+userdata.tb.getInstanceID()+"/"+dataReceived
 
@@ -91,10 +92,12 @@ class simEquTb():
             time.sleep(0.1)
             currTime = datetime.datetime.now()
             timeDiff  = (currTime - startTime).total_seconds()
-        
+        self.stopSim()
 
     def stopSim(self):
         self.simTime = 0 
+        print("----Simulation Ended---")
+
 
     def pauseSim(self):
         self.pause = True
@@ -109,7 +112,7 @@ def main() :
     simEquTbClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simEquTb(1,25)
+    test = simEquTb(1,SIMULATION_TIME)
 
     userdata = test
 

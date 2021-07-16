@@ -12,13 +12,13 @@ class PressureSensor:
     sensorType = "pressure"
     unit = "kPa"
 
-    def __init__(self, instanceID ,avgPressure=1, minPressure=0.25, threshPressure = 100):
+    def __init__(self, instanceID ,avgPressure=10, minPressure=0.25, threshPressure = 100):
         self.minPressure = minPressure
         self.threshPressure = threshPressure
         self.instanceID = instanceID
         self.avgPressure = avgPressure
 
-        self.value = np.random.normal(minPressure , 0.03  )
+        self.value = np.random.normal(minPressure , 0.25  )
 
     def measure(self):
         
@@ -28,6 +28,7 @@ class PressureSensor:
 
     def clearPressure(self):
         self.value = 0
+        print("Pressure cleared.")
 
 
     def getThreshold(self, check = False):
@@ -119,7 +120,7 @@ class EsdProtectionSensor:
         else:
             temp = False
 
-        [self.result] = random.choices([self.result,temp], weights = [0.7, 0.3], k=1)
+        [self.result] = temp
 
     def getStatus(self):
 

@@ -5,21 +5,14 @@ from sensorClass.TempAndHumidity import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,qos=QOS)
-    #print(input_topic_name)
+    print("Publishing to :" + input_topic_name )
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  #print("Connected with result code "+str(rc))
-    pass
-
-
+    print("Connected with result code "+str(rc))
+ 
 def on_message(client, userdata, msg):
-    #print(msg.topic+str(msg.payload))
-    pass
-
-
-
-
+    pass   
 
 class simRoomTemp():
     """docstring for simRoomTemp"""
@@ -47,9 +40,9 @@ class simRoomTemp():
         #create instances of room temperature sensor
         self.roomTempSensList =[]
         for i in range (0,self.rTcount):
-            id = createInstanceID(self.lineNum, 'S', ABV_DICT["roomTemp"], i)
-            self.roomTempSensList.append(TemperatureSensor(instanceID = id,  tempSensorType = TEMP_ROOM))
-            print(id)
+            identity = createInstanceID(self.lineNum, 'S', ABV_DICT["roomTemp"], i)
+            self.roomTempSensList.append(TemperatureSensor(instanceID = identity,  tempSensorType = TEMP_ROOM))
+            print(identity)
 
         self.topicFinal = ""
 
@@ -84,15 +77,16 @@ class simRoomTemp():
 
                 publisher_data(topicDict["RT"] +self.topicFinal ,self.roomTemp ,clientName)
 
-                print("---15 sec over Room Temp---")
+                # print("---15 sec over Room Temp---")
 
 
             currTime = datetime.datetime.now()
             timeDiff  = (currTime - startTime).total_seconds()
-        
+        self.stopSim()
 
     def stopSim(self):
         self.simTime = 0 
+        print("----Simulation endded----") 
 
     def pauseSim(self):
         self.pause = True
@@ -107,7 +101,7 @@ def main() :
     simRoomTempClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.2)
 
-    test = simRoomTemp(1,25)
+    test = simRoomTemp(1,SIMULATION_TIME)
 
     simRoomTempClient.loop_start()
     test.startSim(simRoomTempClient)

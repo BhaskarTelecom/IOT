@@ -6,12 +6,14 @@ from sensorClass.act_TempAndHumidity import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,QOS)
-    #print(publish_data)
+    print("Publishing to :" + input_topic_name )
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  #print("Connected with result code "+str(rc))
-  client.subscribe(topicDict["HS"]+"#",qos=QOS)
+  print("Connected with result code "+str(rc))
+
+  client.subscribe(topicDict["PHA"]+userdata.humidityAct.getInstanceID(), QOS)
+  print("--Subscribed to :"+topicDict["PHA"]+userdata.humidityAct.getInstanceID() )
   time.sleep(0.2)
   
 
@@ -19,7 +21,12 @@ def on_message(client, userdata, msg):
     m_decode=str(msg.payload.decode("utf-8","ignore"))
     dataReceived=json.loads(m_decode) #decode json data
 
-    userdata.humidityAct.updateValue(dataReceived)
+    if 'server' in msg.topic :
+        print("Change state command received from server")
+        if userdata.humidityAct.getState() != dataReceived :
+            userdata.humidityAct.changeState(dataReceived)
+    else :
+        userdata.humidityAct.updateValue(dataReceived)
    
 
 
@@ -38,9 +45,9 @@ class simHumidityAct():
 
         #create instances of room temperature actuator
 
-        id = createInstanceID(self.lineNum, 'A', ABV_DICT["humidityActuator"], 0)
-        self.humidityAct = humidityAction(instanceID = id)
-        print(id)
+        identity = createInstanceID(self.lineNum, 'A', ABV_DICT["humidityActuator"], 0)
+        self.humidityAct = humidityAction(instanceID = identity)
+        print(identity)
 
     def startSim(self, clientName):
 
@@ -66,10 +73,11 @@ class simHumidityAct():
             time.sleep(0.1)
             currTime = datetime.datetime.now()
             timeDiff  = (currTime - startTime).total_seconds()
-        
+        self.stopSim()	
 
     def stopSim(self):
         self.simTime = 0 
+        print("----Simulation endded----")
 
     def pauseSim(self):
         self.pause = True
@@ -84,7 +92,7 @@ def main() :
     simHumidityActClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simHumidityAct(1,25)
+    test = simHumidityAct(1,SIMULATION_TIME)
 
     userdata = test
 

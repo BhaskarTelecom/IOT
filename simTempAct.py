@@ -6,12 +6,16 @@ from sensorClass.act_TempAndHumidity import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,QOS)
-    #print(publish_data)
+    print("Publishing to :" + input_topic_name )
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
-  #print("Connected with result code "+str(rc))
-  client.subscribe("room/+/sensor/roomTemp/#",qos=QOS)
+  print("Connected with result code "+str(rc))
+  # client.subscribe("room/+/sensor/roomTemp/#",qos=QOS)
+  # print("--Subscribed to"+"room/+/sensor/roomTemp/#"+" --")
+
+  client.subscribe(topicDict["PRA"]+userdata.roomTempAct.getInstanceID(), QOS)
+  print("--Subscribed to :"+topicDict["PRA"]+userdata.roomTempAct.getInstanceID())
   time.sleep(0.2)
   
 
@@ -20,7 +24,13 @@ def on_message(client, userdata, msg):
     m_decode=str(msg.payload.decode("utf-8","ignore"))
     dataReceived=json.loads(m_decode) #decode json data
 
-    userdata.roomTempAct.updateValue(dataReceived)
+    if 'server' in msg.topic :
+
+        print("Change state command received from server")
+        if userdata.roomTempAct.getState() != dataReceived :
+            userdata.roomTempAct.changeState(dataReceived)
+    else :
+        userdata.roomTempAct.updateValue(dataReceived)
 
 
 
@@ -40,9 +50,9 @@ class simTempAct():
 
         #create instances of room temperature actuator
 
-        id = createInstanceID(self.lineNum, 'A', ABV_DICT["roomtempActuator"], 0)
-        self.roomTempAct = tempAction(instanceID = id)
-        print(id)
+        identity = createInstanceID(self.lineNum, 'A', ABV_DICT["roomtempActuator"], 0)
+        self.roomTempAct = tempAction(instanceID = identity)
+        print(identity)
 
 
     def startSim(self, clientName):
@@ -72,10 +82,11 @@ class simTempAct():
             time.sleep(0.1)
             currTime = datetime.datetime.now()
             timeDiff  = (currTime - startTime).total_seconds()
-        
+        self.stopSim()
 
     def stopSim(self):
         self.simTime = 0 
+        print("----Simulation endded----")
 
     def pauseSim(self):
         self.pause = True
@@ -90,7 +101,7 @@ def main() :
     simTempActClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simTempAct(1,25)
+    test = simTempAct(1,SIMULATION_TIME)
 
     userdata = test
 

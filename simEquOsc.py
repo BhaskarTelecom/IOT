@@ -6,14 +6,15 @@ from sensorClass.equipment import *
 def publisher_data(input_topic_name,payload_data, myclient):
     publish_data = json.dumps(payload_data,indent=4)
     myclient.publish(input_topic_name,publish_data,QOS)
-    #print(publish_data)
+    print("Publishing to :" + input_topic_name )
     time.sleep(0.1)
 
 def on_connect(client, userdata, flags, rc):
   #print("Connected with result code "+str(rc))
 
-  id = userdata.osc.getInstanceID()
-  client.subscribe(topicDict["PEO"]+id+"/#", QOS )
+  identity = userdata.osc.getInstanceID()
+  client.subscribe(topicDict["PEO"]+identity+"/#", QOS )
+  print("--Subscribed to :"+topicDict["PEO"]+identity+"/#" )
   time.sleep(0.1)
   
 
@@ -22,7 +23,8 @@ def on_message(client, userdata, msg):
     m_decode=str(msg.payload.decode("utf-8","ignore"))
     dataReceived=json.loads(m_decode) #decode json data
 
-    print("date received in OSC")
+    print("Server msg received :"+msg.topic)
+    
     if dataReceived == userdata.topicListSend[0]:
         newTopic = topicDict["OS"]+userdata.osc.getInstanceID()+"/"+dataReceived
         data = {userdata.osc.getInstanceID(): userdata.osc.getToBeCalibDate()}
@@ -84,10 +86,12 @@ class simEquOsc():
             time.sleep(0.1)
             currTime = datetime.datetime.now()
             timeDiff  = (currTime - startTime).total_seconds()
-        
+
+        self.stopSim()
 
     def stopSim(self):
         self.simTime = 0 
+        print("----Simulation Ended----")
 
     def pauseSim(self):
         self.pause = True
@@ -102,7 +106,7 @@ def main() :
     simEquOscClient.connect(brokerHost, brokerPort,brokerKeepAlive)
     time.sleep(0.1)
 
-    test = simEquOsc(1,25)
+    test = simEquOsc(1,SIMULATION_TIME)
 
     userdata = test
 
