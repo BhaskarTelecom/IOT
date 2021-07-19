@@ -7,10 +7,7 @@ body {
 .card {
     margin-bottom: 24px;
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.18);
-    height: 5%;
-    width: 75%;
-    float: left;
-    
+    text-align: center;
 }
 
 .gauge{
@@ -47,7 +44,6 @@ body {
 .left-box{
     margin-top: 10px;
     padding: 05%;
-    float: left;
 }
 
 .menu {
@@ -59,6 +55,12 @@ body {
     margin: -80px auto 0 auto;
     background-color: #FFFFFF;
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.18);
+}
+
+.right-box{
+    padding: 05%;
+    height: 600px;
+
 }
 
 .Select-control {
@@ -87,8 +89,19 @@ body {
 .wrapper {
     margin-right: auto;
     margin-left: auto;
-    max-width: 1024px;
     padding-right: 10px;
     padding-left: 10px;
     margin-top: 32px;
 }
+
+
+.right {
+    /* width: 300px; */
+    padding: 10px; 
+}
+
+/* .table{
+    
+    margin: 0 auto;
+    text-align: center;
+} */
