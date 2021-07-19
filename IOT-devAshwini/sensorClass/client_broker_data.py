@@ -9,11 +9,13 @@ import json
 # certPath = "/home/ashwini/Desktop/IOT/Certificates/certificate.pem.crt"
 # keyPath = "/home/ashwini/Desktop/IOT/Certificates/private.pem.key"
 
-brokerHost =  "mqtt.fluux.io" #"broker.hivemq.io" #"localhost"
+
+
+brokerHost =  "broker.emqx.io" #"broker.hivemq.io" #"localhost"
 brokerPort = 1883
 brokerKeepAlive = 60
 
-SIMULATION_TIME = 15
+SIMULATION_TIME = 5
 
 QOS = 1 #0
 
